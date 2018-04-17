@@ -1,4 +1,4 @@
-// color 4.0.4
+// color 4.0.7
 
 #include <windows.h>
 #include <iostream>
@@ -34,7 +34,7 @@ void cprintf (string str, short tx = scolt)
 	bool color = false;
 	for (size_t i = 0; i < str.size(); i++)
 	{
-		while (i < str.size() && (str[i] != '\\' && str[i] != '\"'))
+		while (i < str.size() && str[i] != '\\')
 		{
 			if (color)
 				if (str[i] == '*')
@@ -53,12 +53,12 @@ void cprintf (string str, short tx = scolt)
 }
 
 /*
-viod mycprintf (string str, short tx = scolt)
+void mycprintf (string str, short tx = scolt)
 {
 	bool color = false;
 	for (size_t i = 0; i < str.size(); i++)
 	{
-		while (i < str.size() && (str[i] != '\\' && str[i] != '\"'))
+		while (i < str.size() && str[i] != '\\')
 		{
 			if (color) cvar (str[i], tx);
 			else cout << str[i];
