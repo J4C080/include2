@@ -1,10 +1,8 @@
-// mylib 4.19.34
+// mylib 4.19.38
 
 #include "color.h"
 #include "conio.h"
 #include <sstream>
-
-short xwin, ywin;
 
 /*______________________________________________________________________________
 VENTANA
@@ -104,7 +102,8 @@ double power (double base, double exp)
 // Aproximar un numero por exceso
 double aproxexc (double num, short dec)
 {
-	double x = power (10, dec), aux = (int)(num*x+1);
+	int x = power (10, dec);
+	double aux = (int)(num*x+1);
 	
 	return (double)(num > aux && num < aux+1? (num*x+1) : num*x)/x;
 }
@@ -113,7 +112,8 @@ double aproxexc (double num, short dec)
 // Aproximar un numero segun los decimales solicitados
 double aprox (double num, short dec)
 {
-	double x = power (10, dec), aux = (int)(num*x+1);
+	int x = power (10, dec);
+	double aux = (int)(num*x+1);
 		
 	return (double)(num > aux && num < aux+0.5? (int)(num*x) : (int)(num*x+1))/x;
 }
@@ -329,6 +329,7 @@ bool isnumber (string str)
 CARACTERES
 ______________________________________________________________________________*/
 
+
 //______________________________________________________________________________
 bool isaccent (unsigned char kar)
 {
@@ -432,7 +433,7 @@ class type
 		type (int x, string y) { lim = x; add = y; }
 
 		virtual bool showif (void) {}
-		virtual void toshow (void) { cvar (key); }
+		virtual void toshow (void) { cprintf ( s (key)); }
 
 		// incluir caracteres adicionales
 		others (void)
@@ -497,7 +498,7 @@ class text : private type
 			key = gtoa (key);
 
 			key = uppercase && (i == 0 || str[i-1] == ' ')? toUpper (key) : toLower (key);
-			cout << key;
+			type::toshow (key);
 		}
 		string capture (void) { return type::capture (); }
 };
