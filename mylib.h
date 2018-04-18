@@ -226,7 +226,9 @@ int centerText (short y, string txt, short tx = scolt)
 			exc++;
 	
 	tam_c = txt.size () - exc;
-	pos_x = (tam_c < vActual.screenwidth? (vActual.screenwidth - tam_c)/2 : 0)+1;
+	pos_x = (tam_c < vActual.screenwidth? (vActual.screenwidth - tam_c)/2 : 0)+1;;
+	
+	gotoxy (pos_x, y); cprintf (txt, tx);
 }
 
 //______________________________________________________________________________
@@ -509,7 +511,7 @@ class text : private type
 			key = gtoa (key);
 
 			key = uppercase && (i == 0 || str[i-1] == ' ')? toUpper (key) : toLower (key);
-			type::toshow (key);
+			type::toshow ();
 		}
 		string capture (void) { return type::capture (); }
 };
