@@ -1,4 +1,4 @@
-// mylib 4.19.42
+// mylib 4.19.43
 
 #include "color.h"
 #include "conio.h"
@@ -102,17 +102,17 @@ double power (double base, double exp)
 // Aproximar un numero por exceso
 double aproxexc (double num, short dec)
 {
-	int x = power (10, dec);
-	double aux = (int)(num*x+1);
+	double x = power (10, dec);
+	double aux = (int)(num*x);
 	
-	return (double)(num > aux && num < aux+1? (num*x+1) : num*x)/x;
+	return num > aux && num < aux+1? (num*x+1)/x : num;
 }
 
 //______________________________________________________________________________
 // Aproximar un numero segun los decimales solicitados
 double aprox (double num, short dec)
 {
-	int x = power (10, dec);
+	double x = power (10, dec);
 	double aux = (int)(num*x+1);
 		
 	return (double)(num > aux && num < aux+0.5? (int)(num*x) : (int)(num*x+1))/x;
