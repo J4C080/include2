@@ -1,4 +1,4 @@
-// color 4.0.7
+// color 4.0.8
 
 #include <windows.h>
 #include <iostream>
@@ -43,7 +43,7 @@ void cprintf (string str, short tx = scolt)
 					cvar (str[i], tx);
 			else
 				if (!isalnum (str[i]) && !isaccent (str[i]) && !isspace (str[i]))
-					cvar (str[i], scolt);
+					cvar (str[i], tx);
 				else
 					cout << str[i];
 			i++;
