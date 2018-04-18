@@ -1,4 +1,4 @@
-// mylib 4.19.38
+// mylib 4.19.42
 
 #include "color.h"
 #include "conio.h"
@@ -131,15 +131,15 @@ unsigned long long fact (int n)
 // Ordenar un arreglo con el metodo BubbleSort
 void bubbleSort (int*arr, int ele)
 {
-  int i, j, tmp;
-  for (i = 0; i < ele; i++)
-    for (j = i+1; j < ele; j++)
-      if (arr[i] > arr[j])
-      {
-        tmp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
-      }
+  	int i, j, tmp;
+	for (i = 0; i < ele; i++)
+    	for (j = i+1; j < ele; j++)
+    		if (arr[i] > arr[j])
+    		{
+    			tmp = arr[i];
+    			arr[i] = arr[j];
+    			arr[j] = tmp;
+    		}
 }
 
 //______________________________________________________________________________
@@ -181,31 +181,34 @@ void selectionsort (int*arr, int ele)
 // Ordenar un arreglo con el metodo QuickSort
 void quickSort (int*arr, int izq, int der)
 {
-  int itr = izq, jtr = der, tmp;
-  int piv = arr[(izq+der)/2];
+	int itr = izq, jtr = der, tmp;
+	int piv = arr[(izq+der)/2];
 
-  while (itr <= jtr)
-  {
-    while (arr[itr] < piv) itr++;
-    while (arr[jtr] > piv) jtr--;
+	while (itr <= jtr)
+	{
+		while (arr[itr] < piv) itr++;
+		while (arr[jtr] > piv) jtr--;
 
-    if (itr <= jtr)
-    {
-      tmp = arr[itr];
-      arr[itr] = arr[jtr];
-      arr[jtr] = tmp;
-      itr++;
-      jtr--;
-    }
-  }
+		if (itr <= jtr)
+    	{
+    		tmp = arr[itr];
+    		arr[itr] = arr[jtr];
+    		arr[jtr] = tmp;
+    		itr++;
+    		jtr--;
+		}
+	}
 
-  if (izq < jtr) quickSort (arr, izq, jtr);
-  if (itr < der) quickSort (arr, itr, der);
+	if (izq < jtr) quickSort (arr, izq, jtr);
+	if (itr < der) quickSort (arr, itr, der);
 }
 
 //______________________________________________________________________________
 // Generar un numero aleatorio
-int random (int lim_i, int lim_s) { return (lim_i + rand()% (lim_s + 1 - lim_i)); }
+int random (int lim_i, int lim_s)
+{
+	return (lim_i + rand()% (lim_s + 1 - lim_i));
+}
 
 /*______________________________________________________________________________
 TEXTO
@@ -214,27 +217,35 @@ ______________________________________________________________________________*/
 
 //______________________________________________________________________________
 // Centar texto tomando en cuenta el tamano de la ventana y la cadena
-int centerText (short y, string txt, short tx = scolt, short exc = 0)
+int centerText (short y, string txt, short tx = scolt)
 {
-	int tam_c = txt.size () - exc;
-	int pos_x = (tam_c < vActual.screenwidth? (vActual.screenwidth - tam_c)/2 : 0)+1;
-
-	gotoxy (pos_x, y); cprintf (txt, tx);
-	return pos_x;
+	short i, tam_c, pos_x, exc = 0;
+	
+	for (short i = 0; i < txt.size (); i++)
+		if (txt[i] == '\\')
+			exc++;
+	
+	tam_c = txt.size () - exc;
+	pos_x = (tam_c < vActual.screenwidth? (vActual.screenwidth - tam_c)/2 : 0)+1;
 }
 
 //______________________________________________________________________________
 // Mostrar mensaje de error
-bool warning (short y, string err, short exc = 0)
+bool warning (short y, string err)
 {
-	err = "\\ERROR: *\\" + err + "\\*";
+	short i, exc = 0, pos;	
 	
-	short i, pos = centerText (y, err, 12, exc+3);
+	err = "\\*\\" + err + "\\*";
 	
+	for (i = 0; i < err.size (); i++)
+		if (err[i] == '\\')
+			exc++;
+	
+	pos = centerText (y, err, 12);
 	getch ();
 
 	gotoxy (pos, y);
-	for (i = 0; i < err.size (); i++)
+	for (i = 0; i < err.size () - exc; i++)
 		cout << ' ';
 
 	return false;
