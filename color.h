@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-short colf = 0, pcolt = 15, scolt = 15;
+int colf = 0, pcolt = 15, scolt = 15;
 
 bool isaccent (unsigned char);
 
