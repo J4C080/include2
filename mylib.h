@@ -103,19 +103,19 @@ double power (double base, double exp)
 double aproxexc (double num, short dec)
 {
 	double x = power (10, dec);
-	double aux = (int)(num*x);
-	
-	return num > aux && num < aux+1? (num*x+1)/x : num;
+	num *= x;
+	return (double)(num > (int)num? (int)(num+1) : (int)num)/x;
 }
 
 //______________________________________________________________________________
 // Aproximar un numero segun los decimales solicitados
 double aprox (double num, short dec)
 {
-	double x = power (10, dec);
-	double aux = (int)(num*x+1);
-		
-	return (double)(num > aux && num < aux+0.5? (int)(num*x) : (int)(num*x+1))/x;
+	double x, aux;
+	x = power (10, dec);
+	num *= x;
+	aux = (int)num;
+	return (double)(num > aux+0.5? (int)(num+1) : (int)num)/x;
 }
 
 //______________________________________________________________________________
@@ -235,18 +235,16 @@ int centerText (short y, string txt, short tx = scolt)
 // Mostrar mensaje de error
 bool warning (short y, string err)
 {
-	short i, exc = 0, pos;	
+	short i, exc = 0;	
 	
-	err = "\\*\\" + err + "\\*";
+	err = "\\*ERROR: \\" + err + "\\*";
 	
 	for (i = 0; i < err.size (); i++)
 		if (err[i] == '\\')
 			exc++;
-	
-	pos = centerText (y, err, 12);
-	getch ();
 
-	gotoxy (pos, y);
+	gotoxy (centerText (y, err, 12), y);
+	getch ();
 	for (i = 0; i < err.size () - exc; i++)
 		cout << ' ';
 
@@ -437,85 +435,49 @@ class type
 {
 	private:
 		short lim; // limite de caracteres
-		string add; // cadena de caracteres que almacenara caracteres adicionales
+		string add; // Cadena de caracteres que almacenara caracteres adicionales
+		
 	public:
-		short i; // indicador de posicion
-		unsigned char key;
-		string str; // cadena de caracteres a retornar
+		
+		short i; // Indicador de posicion
+		unsigned char key; // Caracter desde teclado
+		string str; // Cadena de caracteres a retornar
 
-		type (int x, string y) { lim = x; add = y; }
+		type (int, string);
 
-		virtual bool showif (void) {}
-		virtual void toshow (void) { cprintf ( s (key)); }
+		virtual bool showif (void);
+		virtual void toshow (void);
 
-		// incluir caracteres adicionales
-		others (void)
-		{
-			for (int i = 0; i < add.size (); i++)
-				if (key == add[i])
-					return true;
-			return false;
-		}
+		bool others (void); // Incluir caracteres adicionales
 
 		virtual string capture (void);
 };
 
-//______________________________________________________________________________
-class integer : private type
+//____
+type::type (int x, string y)
 {
-	private:
-		bool negative;
-	public:
-		integer (int x, bool y = true, string z = "") : type (x, z) { negative = y; };
+	lim = x; add = y;
+}
 
-		bool showif (void)
-		{
-			return negative?
-				isdigit (key) || (key == 45 && str.find ("-") == string::npos && !isdigit (str[0]))
-			:
-				isdigit (key);
-		}
-		string capture (void) { return type::capture (); }
-};
+//____
+bool type::showif (void) {}
 
-//______________________________________________________________________________
-class floating : private type
+//____
+void type::toshow (void)
 {
-	private:
-		bool negative;
-	public:
-		floating (int x, bool y = true, string z = "") : type (x, z) { negative = y; }
+	cprintf ( s (key));
+}
 
-		bool showif (void)
-		{
-			return negative?
-				isdigit (key) || (key == 45 && str.find ("-") == string::npos && !isdigit (str[0])) ||
-				(key == 46 && str.find (".") == string::npos && (isdigit (str[0]) || (str[0] == 45 && isdigit (str[1]))))
-			:
-				isdigit (key) || key == 46 && str.find (".") == string::npos && isdigit (str[0]);
-		}
-		string capture (void) { return type::capture (); }
-};
-
-//______________________________________________________________________________
-class text : private type
+//____
+bool type::others (void)
 {
-	private:
-		bool uppercase;
-	public:
-		text (int x, bool y = true, string z = "") : type (x, z) { uppercase = y; };
+	for (int i = 0; i < add.size (); i++)
+		if (key == add[i])
+			return true;
+	return false;
+}
 
-		bool showif (void) { return isalpha (key) || key == 32 || isaccent (key); }
-		void toshow (void)
-		{
-			key = gtoa (key);
-
-			key = uppercase && (i == 0 || str[i-1] == ' ')? toUpper (key) : toLower (key);
-			type::toshow ();
-		}
-		string capture (void) { return type::capture (); }
-};
-
+//____
 string type::capture (void)
 {
 	i = 0;
@@ -541,4 +503,98 @@ string type::capture (void)
 	}
 	while (key != 13 || str.empty ()); // hasta que presione enter y la cadena tenga contenido
 	return str;
+}
+
+//______________________________________________________________________________
+class integer : public type
+{
+	private:
+		bool negative;
+		
+	public:
+		
+		integer (int x, bool y = true, string z = "") : type (x, z) { negative = y; };
+
+		bool showif (void);
+		string capture (void);
+};
+
+//____
+bool integer::showif (void)
+{
+	return negative?
+		isdigit (key) || (key == 45 && str.find ("-") == string::npos && !isdigit (str[0]))
+	:
+		isdigit (key);
+}
+
+//____
+string integer::capture (void)
+{
+	return type::capture ();
+}
+
+//______________________________________________________________________________
+class floating : public type
+{
+	private:
+		bool negative;
+		
+	public:
+		
+		floating (int x, bool y = true, string z = "") : type (x, z) { negative = y; }
+
+		bool showif (void);
+		string capture (void);
+};
+
+//____
+bool floating::showif (void)
+{
+	return negative?
+		isdigit (key) || (key == 45 && str.find ("-") == string::npos && !isdigit (str[0])) ||
+		(key == 46 && str.find (".") == string::npos && (isdigit (str[0]) || (str[0] == 45 && isdigit (str[1]))))
+	:
+		isdigit (key) || key == 46 && str.find (".") == string::npos && isdigit (str[0]);
+}
+
+//____
+string floating::capture (void)
+{
+	return type::capture ();
+}
+
+//______________________________________________________________________________
+class text : public type
+{
+	private:
+		bool uppercase;
+		
+	public:
+		
+		text (int x, bool y = true, string z = "") : type (x, z) { uppercase = y; };
+
+		bool showif (void);
+		void toshow (void);
+		string capture (void);
+};
+
+//____
+bool text::showif (void)
+{
+	return isalpha (key) || key == 32 || isaccent (key);
+}
+
+//____
+void text::toshow (void)
+{
+	key = gtoa (key);
+	key = uppercase && (i == 0 || str[i-1] == ' ')? toUpper (key) : toLower (key);
+	type::toshow ();
+}
+
+//____
+string text::capture (void)
+{
+	return type::capture ();
 }
