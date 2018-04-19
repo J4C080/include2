@@ -516,7 +516,7 @@ class integer : public type
 		integer (int x, bool y = true, string z = "") : type (x, z) { negative = y; };
 
 		bool showif (void);
-		string capture (void);
+		long capture (void);
 };
 
 //____
@@ -526,6 +526,11 @@ bool integer::showif (void)
 		isdigit (key) || (key == 45 && str.find ("-") == string::npos && !isdigit (str[0]))
 	:
 		isdigit (key);
+}
+
+long integer::capture (void)
+{
+	return stoL (type::capture ());
 }
 
 //____
@@ -546,6 +551,7 @@ class floating : public type
 
 		bool showif (void);
 		string capture (void);
+		double capture (void);
 };
 
 //____
@@ -564,6 +570,11 @@ string floating::capture (void)
 	return type::capture ();
 }
 
+double floating::capture (void)
+{
+	return stoF (type::capture ());
+}
+
 //______________________________________________________________________________
 class text : public type
 {
@@ -576,7 +587,6 @@ class text : public type
 
 		bool showif (void);
 		void toshow (void);
-		string capture (void);
 };
 
 //____
@@ -591,10 +601,4 @@ void text::toshow (void)
 	key = gtoa (key);
 	key = uppercase && (i == 0 || str[i-1] == ' ')? toUpper (key) : toLower (key);
 	type::toshow ();
-}
-
-//____
-string text::capture (void)
-{
-	return type::capture ();
 }
